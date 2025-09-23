@@ -1,0 +1,68 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ST_Assignment_1.Data;
+using ST_Assignment_1.Models;
+
+namespace ST_Assignment_1.Controllers
+{
+    [ApiController]
+    [Route("api/exercises")]
+    public class ExercisesController : ControllerBase
+    {
+        private readonly WorkoutJournalDbContext _db;
+        public ExercisesController(WorkoutJournalDbContext db)
+        {
+            _db = db;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Exercise>>> GetAll()
+        {
+            return await _db.Exercises.ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Exercise>> GetById(Guid id)
+        {
+            var exercise = await _db.Exercises.FindAsync(id);
+            if (exercise == null) return NotFound();
+            return exercise;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Exercise>> Create(Exercise exercise)
+        {
+            exercise.Id = Guid.NewGuid();
+            exercise.CreatedAt = DateTime.UtcNow;
+            _db.Exercises.Add(exercise);
+            await _db.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetById), new { id = exercise.Id }, exercise);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, Exercise updated)
+        {
+            var exercise = await _db.Exercises.FindAsync(id);
+            if (exercise == null) return NotFound();
+            exercise.Name = updated.Name;
+            exercise.Category = updated.Category;
+            exercise.Description = updated.Description;
+            exercise.DefaultSets = updated.DefaultSets;
+            exercise.DefaultReps = updated.DefaultReps;
+            exercise.DefaultRestSeconds = updated.DefaultRestSeconds;
+            exercise.Difficulty = updated.Difficulty;
+            await _db.SaveChangesAsync();
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var exercise = await _db.Exercises.FindAsync(id);
+            if (exercise == null) return NotFound();
+            _db.Exercises.Remove(exercise);
+            await _db.SaveChangesAsync();
+            return NoContent();
+        }
+    }
+}

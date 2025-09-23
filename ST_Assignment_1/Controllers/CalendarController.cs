@@ -1,0 +1,111 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using ST_Assignment_1.Data;
+using ST_Assignment_1.Models;
+
+namespace ST_Assignment_1.Controllers
+{
+    [ApiController]
+    [Route("api/calendar")]
+    public class CalendarController : ControllerBase
+    {
+        private readonly WorkoutJournalDbContext _db;
+        public CalendarController(WorkoutJournalDbContext db)
+        {
+            _db = db;
+        }
+
+        // GET /api/calendar?start=yyyy-mm-dd&end=yyyy-mm-dd
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<CalendarEntry>>> GetRange([FromQuery] DateTime start, [FromQuery] DateTime end)
+        {
+            return await _db.CalendarEntries
+                .Include(e => e.Template)
+                .Include(e => e.CustomItems)
+                .Where(e => e.Date >= start && e.Date <= end)
+                .ToListAsync();
+        }
+
+        // POST /api/calendar
+        [HttpPost]
+        public async Task<ActionResult<CalendarEntry>> Create(CalendarEntry entry)
+        {
+            entry.Id = Guid.NewGuid();
+            // If creating from template, copy template items to CustomItems
+            if (entry.TemplateId.HasValue)
+            {
+                var template = await _db.Templates.Include(t => t.Items).FirstOrDefaultAsync(t => t.Id == entry.TemplateId);
+                if (template != null)
+                {
+                    entry.CustomItems = template.Items.Select(item => new ExerciseTemplateItem
+                    {
+                        Id = Guid.NewGuid(),
+                        ExerciseId = item.ExerciseId,
+                        Order = item.Order,
+                        TargetSets = item.TargetSets,
+                        TargetReps = item.TargetReps,
+                        TargetRestSeconds = item.TargetRestSeconds,
+                        Notes = item.Notes
+                    }).ToList();
+                }
+            }
+            if (entry.CustomItems != null)
+            {
+                foreach (var item in entry.CustomItems)
+                {
+                    item.Id = Guid.NewGuid();
+                }
+            }
+            _db.CalendarEntries.Add(entry);
+            await _db.SaveChangesAsync();
+            return CreatedAtAction(nameof(GetById), new { id = entry.Id }, entry);
+        }
+
+        // GET /api/calendar/{id}
+        [HttpGet("{id}")]
+        public async Task<ActionResult<CalendarEntry>> GetById(Guid id)
+        {
+            var entry = await _db.CalendarEntries
+                .Include(e => e.Template)
+                .Include(e => e.CustomItems)
+                .FirstOrDefaultAsync(e => e.Id == id);
+            if (entry == null) return NotFound();
+            return entry;
+        }
+
+        // PUT /api/calendar/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, CalendarEntry updated)
+        {
+            var entry = await _db.CalendarEntries.Include(e => e.CustomItems).FirstOrDefaultAsync(e => e.Id == id);
+            if (entry == null) return NotFound();
+            entry.Date = updated.Date;
+            entry.Status = updated.Status;
+            entry.TemplateId = updated.TemplateId;
+            // Replace custom items
+            entry.CustomItems.Clear();
+            if (updated.CustomItems != null)
+            {
+                foreach (var item in updated.CustomItems)
+                {
+                    item.Id = Guid.NewGuid();
+                    entry.CustomItems.Add(item);
+                }
+            }
+            await _db.SaveChangesAsync();
+            return NoContent();
+        }
+
+        // DELETE /api/calendar/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var entry = await _db.CalendarEntries.FindAsync(id);
+            if (entry == null) return NotFound();
+            _db.CalendarEntries.Remove(entry);
+            await _db.SaveChangesAsync();
+            return NoContent();
+        }
+    }
+}
+
