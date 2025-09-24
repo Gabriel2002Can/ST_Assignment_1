@@ -7,7 +7,7 @@ namespace ST_Assignment_1.Models
 
     public class Template
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public TemplateFrequency Frequency { get; set; }

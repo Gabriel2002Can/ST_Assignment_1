@@ -25,7 +25,6 @@ namespace ST_Assignment_1.Controllers
             if (entry == null) return NotFound("Calendar entry not found");
             var session = new WorkoutSession
             {
-                Id = Guid.NewGuid(),
                 UserId = req.UserId,
                 CalendarEntryId = req.CalendarEntryId,
                 StartTime = DateTime.UtcNow,
@@ -37,7 +36,6 @@ namespace ST_Assignment_1.Controllers
             {
                 session.SessionItems.Add(new SessionExercise
                 {
-                    Id = Guid.NewGuid(),
                     ExerciseId = item.ExerciseId,
                     Order = item.Order,
                     TargetSets = item.TargetSets,
@@ -54,14 +52,13 @@ namespace ST_Assignment_1.Controllers
 
         // PATCH /api/sessions/{id}/exercise/{exerciseId}/set
         [HttpPatch("{id}/exercise/{exerciseId}/set")]
-        public async Task<IActionResult> RecordSet(Guid id, Guid exerciseId, [FromBody] RecordSetRequest req)
+        public async Task<IActionResult> RecordSet(int id, int exerciseId, [FromBody] RecordSetRequest req)
         {
             var sessionExercise = await _db.SessionExercises.Include(se => se.Sets)
                 .FirstOrDefaultAsync(se => se.SessionId == id && se.Id == exerciseId);
             if (sessionExercise == null) return NotFound();
             var setRecord = new SetRecord
             {
-                Id = Guid.NewGuid(),
                 SessionExerciseId = sessionExercise.Id,
                 SetNumber = req.SetNumber,
                 PlannedRepsOrDuration = sessionExercise.TargetReps,
@@ -72,56 +69,19 @@ namespace ST_Assignment_1.Controllers
             sessionExercise.Sets.Add(setRecord);
             sessionExercise.CompletedSets = sessionExercise.Sets.Count;
             await _db.SaveChangesAsync();
-            return Ok(setRecord);
-        }
-
-        // PUT /api/sessions/{id}/end
-        [HttpPut("{id}/end")]
-        public async Task<IActionResult> EndSession(Guid id)
-        {
-            var session = await _db.WorkoutSessions.FindAsync(id);
-            if (session == null) return NotFound();
-            session.EndTime = DateTime.UtcNow;
-            await _db.SaveChangesAsync();
             return NoContent();
         }
 
         // GET /api/sessions/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<WorkoutSession>> GetSession(Guid id)
+        public async Task<ActionResult<WorkoutSession>> GetSession(int id)
         {
             var session = await _db.WorkoutSessions
-                .Include(s => s.SessionItems)
+                .Include(ws => ws.SessionItems)
                 .ThenInclude(se => se.Sets)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(ws => ws.Id == id);
             if (session == null) return NotFound();
             return session;
-        }
-
-        // GET /api/sessions?userId=&start=&end=
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<WorkoutSession>>> GetHistory([FromQuery] Guid userId, [FromQuery] DateTime? start, [FromQuery] DateTime? end)
-        {
-            var query = _db.WorkoutSessions
-                .Include(s => s.SessionItems)
-                .ThenInclude(se => se.Sets)
-                .Where(s => s.UserId == userId);
-            if (start.HasValue) query = query.Where(s => s.StartTime >= start);
-            if (end.HasValue) query = query.Where(s => s.StartTime <= end);
-            return await query.ToListAsync();
-        }
-
-        public class StartSessionRequest
-        {
-            public Guid UserId { get; set; }
-            public Guid CalendarEntryId { get; set; }
-        }
-
-        public class RecordSetRequest
-        {
-            public int SetNumber { get; set; }
-            public string ActualRepsOrDuration { get; set; }
-            public int RestAfterSetSeconds { get; set; }
         }
     }
 }

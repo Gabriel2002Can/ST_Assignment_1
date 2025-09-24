@@ -5,10 +5,10 @@ namespace ST_Assignment_1.Models
 {
     public class SessionExercise
     {
-        public Guid Id { get; set; }
-        public Guid SessionId { get; set; }
+        public int Id { get; set; }
+        public int SessionId { get; set; }
         public WorkoutSession Session { get; set; }
-        public Guid ExerciseId { get; set; }
+        public int ExerciseId { get; set; }
         public Exercise Exercise { get; set; }
         public int Order { get; set; }
         public int TargetSets { get; set; }

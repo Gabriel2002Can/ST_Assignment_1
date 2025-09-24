@@ -17,11 +17,11 @@ namespace ST_Assignment_1.Controllers
 
         // GET /api/reports/progress?exerciseId=&start=&end=
         [HttpGet("progress")]
-        public async Task<ActionResult<ProgressReport>> GetProgress([FromQuery] Guid exerciseId, [FromQuery] DateTime? start, [FromQuery] DateTime? end)
+        public async Task<ActionResult<ProgressReport>> GetProgress([FromQuery] int exerciseId, [FromQuery] DateTime? start, [FromQuery] DateTime? end)
         {
             var sets = await _db.SetRecords
                 .Include(sr => sr.SessionExercise)
-                .Where(sr => sr.SessionExercise.ExerciseId == exerciseId)
+                .Where(sr => sr.SessionExerciseId == exerciseId)
                 .Where(sr => !start.HasValue || sr.Timestamp >= start)
                 .Where(sr => !end.HasValue || sr.Timestamp <= end)
                 .ToListAsync();
