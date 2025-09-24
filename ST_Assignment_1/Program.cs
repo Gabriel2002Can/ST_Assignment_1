@@ -8,12 +8,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // Required for Swagger
 builder.Services.AddSwaggerGen(); // Add Swagger generator
 
-// Register WorkoutJournalDbContext with connection string and enable retry on failure
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
+                      ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<WorkoutJournalDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlOptions => sqlOptions.EnableRetryOnFailure()
-    ));
+    options.UseNpgsql(
+        connectionString, npgsqlOptions => npgsqlOptions.EnableRetryOnFailure()
+    )
+);
+
 
 var app = builder.Build();
 
