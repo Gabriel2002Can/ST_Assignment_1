@@ -16,6 +16,5 @@ namespace ST_Assignment_1.Models
         public string DefaultReps { get; set; }
         public int DefaultRestSeconds { get; set; }
         public ExerciseDifficulty Difficulty { get; set; }
-        public DateTime CreatedAt { get; set; }
     }
 }

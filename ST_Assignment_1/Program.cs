@@ -12,11 +12,8 @@ var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING")
                       ?? builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<WorkoutJournalDbContext>(options =>
-    options.UseNpgsql(
-        connectionString, npgsqlOptions => npgsqlOptions.EnableRetryOnFailure()
-    )
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
-
 
 var app = builder.Build();
 

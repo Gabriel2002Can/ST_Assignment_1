@@ -26,8 +26,7 @@ namespace ST_Assignment_1.Migrations
                     DefaultSets = table.Column<int>(type: "integer", nullable: false),
                     DefaultReps = table.Column<string>(type: "text", nullable: false),
                     DefaultRestSeconds = table.Column<int>(type: "integer", nullable: false),
-                    Difficulty = table.Column<int>(type: "integer", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Difficulty = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -212,25 +211,25 @@ namespace ST_Assignment_1.Migrations
 
             migrationBuilder.InsertData(
                 table: "Exercises",
-                columns: new[] { "Id", "Category", "CreatedAt", "DefaultReps", "DefaultRestSeconds", "DefaultSets", "Description", "Difficulty", "Name" },
+                columns: new[] { "Id", "Category", "DefaultReps", "DefaultRestSeconds", "DefaultSets", "Description", "Difficulty", "Name" },
                 values: new object[,]
                 {
-                    { 1, 0, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "8-15", 75, 3, "Standard push-up. Keep body aligned.", 0, "Push-up" },
-                    { 2, 0, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "8-20", 60, 3, "Incline push-up.", 0, "Incline Push-up" },
-                    { 3, 0, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "6-12", 90, 3, "Diamond push-up.", 1, "Diamond Push-up" },
-                    { 4, 0, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "6-12", 105, 3, "Pike push-up.", 1, "Pike Push-up" },
-                    { 5, 1, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "3-10", 135, 4, "Pull-up.", 1, "Pull-up" },
-                    { 6, 1, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "3-10", 135, 4, "Chin-up.", 1, "Chin-up" },
-                    { 7, 1, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "8-15", 75, 3, "Bodyweight row.", 0, "Bodyweight Row (Australian Pull-up)" },
-                    { 8, 0, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "6-15", 105, 3, "Parallel bar dips.", 1, "Dips (parallel bar)" },
-                    { 9, 2, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "12-20", 60, 3, "Bodyweight squat.", 0, "Squat (bodyweight)" },
-                    { 10, 2, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "8-15", 75, 3, "Jump squat.", 1, "Jump Squat" },
-                    { 11, 2, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "3-8", 135, 4, "Assisted pistol squat.", 2, "Pistol Squat (assisted)" },
-                    { 12, 2, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "8-15", 75, 3, "Lunges.", 0, "Lunges (walking/static)" },
-                    { 13, 3, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "30-90s", 60, 3, "Plank.", 0, "Plank" },
-                    { 14, 3, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "8-15", 75, 3, "Hanging leg raise.", 1, "Hanging Leg Raise" },
-                    { 15, 4, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "30s", 45, 3, "Mountain climbers.", 0, "Mountain Climbers" },
-                    { 16, 4, new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "6-15", 90, 3, "Burpee.", 1, "Burpee" }
+                    { 1, 0, "8-15", 75, 3, "Standard push-up. Keep body aligned.", 0, "Push-up" },
+                    { 2, 0, "8-20", 60, 3, "Incline push-up.", 0, "Incline Push-up" },
+                    { 3, 0, "6-12", 90, 3, "Diamond push-up.", 1, "Diamond Push-up" },
+                    { 4, 0, "6-12", 105, 3, "Pike push-up.", 1, "Pike Push-up" },
+                    { 5, 1, "3-10", 135, 4, "Pull-up.", 1, "Pull-up" },
+                    { 6, 1, "3-10", 135, 4, "Chin-up.", 1, "Chin-up" },
+                    { 7, 1, "8-15", 75, 3, "Bodyweight row.", 0, "Bodyweight Row (Australian Pull-up)" },
+                    { 8, 0, "6-15", 105, 3, "Parallel bar dips.", 1, "Dips (parallel bar)" },
+                    { 9, 2, "12-20", 60, 3, "Bodyweight squat.", 0, "Squat (bodyweight)" },
+                    { 10, 2, "8-15", 75, 3, "Jump squat.", 1, "Jump Squat" },
+                    { 11, 2, "3-8", 135, 4, "Assisted pistol squat.", 2, "Pistol Squat (assisted)" },
+                    { 12, 2, "8-15", 75, 3, "Lunges.", 0, "Lunges (walking/static)" },
+                    { 13, 3, "30-90s", 60, 3, "Plank.", 0, "Plank" },
+                    { 14, 3, "8-15", 75, 3, "Hanging leg raise.", 1, "Hanging Leg Raise" },
+                    { 15, 4, "30s", 45, 3, "Mountain climbers.", 0, "Mountain Climbers" },
+                    { 16, 4, "6-15", 90, 3, "Burpee.", 1, "Burpee" }
                 });
 
             migrationBuilder.CreateIndex(

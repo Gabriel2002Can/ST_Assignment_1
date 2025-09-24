@@ -12,7 +12,7 @@ using ST_Assignment_1.Data;
 namespace ST_Assignment_1.Migrations
 {
     [DbContext(typeof(WorkoutJournalDbContext))]
-    [Migration("20250924153116_InitialMigration")]
+    [Migration("20250924175729_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -65,9 +65,6 @@ namespace ST_Assignment_1.Migrations
                     b.Property<int>("Category")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<string>("DefaultReps")
                         .IsRequired()
                         .HasColumnType("text");
@@ -98,7 +95,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 1,
                             Category = 0,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "8-15",
                             DefaultRestSeconds = 75,
                             DefaultSets = 3,
@@ -110,7 +106,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 2,
                             Category = 0,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "8-20",
                             DefaultRestSeconds = 60,
                             DefaultSets = 3,
@@ -122,7 +117,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 3,
                             Category = 0,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "6-12",
                             DefaultRestSeconds = 90,
                             DefaultSets = 3,
@@ -134,7 +128,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 4,
                             Category = 0,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "6-12",
                             DefaultRestSeconds = 105,
                             DefaultSets = 3,
@@ -146,7 +139,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 5,
                             Category = 1,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "3-10",
                             DefaultRestSeconds = 135,
                             DefaultSets = 4,
@@ -158,7 +150,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 6,
                             Category = 1,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "3-10",
                             DefaultRestSeconds = 135,
                             DefaultSets = 4,
@@ -170,7 +161,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 7,
                             Category = 1,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "8-15",
                             DefaultRestSeconds = 75,
                             DefaultSets = 3,
@@ -182,7 +172,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 8,
                             Category = 0,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "6-15",
                             DefaultRestSeconds = 105,
                             DefaultSets = 3,
@@ -194,7 +183,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 9,
                             Category = 2,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "12-20",
                             DefaultRestSeconds = 60,
                             DefaultSets = 3,
@@ -206,7 +194,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 10,
                             Category = 2,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "8-15",
                             DefaultRestSeconds = 75,
                             DefaultSets = 3,
@@ -218,7 +205,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 11,
                             Category = 2,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "3-8",
                             DefaultRestSeconds = 135,
                             DefaultSets = 4,
@@ -230,7 +216,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 12,
                             Category = 2,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "8-15",
                             DefaultRestSeconds = 75,
                             DefaultSets = 3,
@@ -242,7 +227,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 13,
                             Category = 3,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "30-90s",
                             DefaultRestSeconds = 60,
                             DefaultSets = 3,
@@ -254,7 +238,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 14,
                             Category = 3,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "8-15",
                             DefaultRestSeconds = 75,
                             DefaultSets = 3,
@@ -266,7 +249,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 15,
                             Category = 4,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "30s",
                             DefaultRestSeconds = 45,
                             DefaultSets = 3,
@@ -278,7 +260,6 @@ namespace ST_Assignment_1.Migrations
                         {
                             Id = 16,
                             Category = 4,
-                            CreatedAt = new DateTime(2020, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DefaultReps = "6-15",
                             DefaultRestSeconds = 90,
                             DefaultSets = 3,
