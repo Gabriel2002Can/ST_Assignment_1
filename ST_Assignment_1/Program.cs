@@ -14,7 +14,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(policy =>
     {
         policy
-            .WithOrigins("https://seu-frontend.github.io") 
+            .WithOrigins("https://gabriel2002can.github.io/ST_Assignment_1_Frontend") 
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
