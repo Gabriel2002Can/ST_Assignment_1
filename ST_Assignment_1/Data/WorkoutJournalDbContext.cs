@@ -90,6 +90,28 @@ namespace ST_Assignment_1.Data
                 new Exercise { Id = 15, Name = "Mountain Climbers", Category = ExerciseCategory.Conditioning, Description = "Mountain climbers.", DefaultSets = 3, DefaultReps = "30s", DefaultRestSeconds = 45, Difficulty = ExerciseDifficulty.Beginner},
                 new Exercise { Id = 16, Name = "Burpee", Category = ExerciseCategory.Conditioning, Description = "Burpee.", DefaultSets = 3, DefaultReps = "6-15", DefaultRestSeconds = 90, Difficulty = ExerciseDifficulty.Intermediate}
             );
+
+            // Seed a user
+            modelBuilder.Entity<User>().HasData(
+                new User { Id = 1, Username = "demo", Email = "demo@example.com", PasswordHash = "", CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc) }
+            );
+
+            // Seed a template (Full Body Beginner)
+            modelBuilder.Entity<Template>().HasData(
+                new Template { Id = 1, Name = "Full Body Beginner", Description = "A simple full body routine for beginners.", Frequency = TemplateFrequency.Daily }
+            );
+
+            // Seed template items (linking to seeded exercises)
+            modelBuilder.Entity<ExerciseTemplateItem>().HasData(
+                new ExerciseTemplateItem { Id = 1, ExerciseId = 1, Order = 1, TargetSets = 3, TargetReps = "8-12", TargetRestSeconds = 75, Notes = "Standard push-up" },
+                new ExerciseTemplateItem { Id = 2, ExerciseId = 9, Order = 2, TargetSets = 3, TargetReps = "12-20", TargetRestSeconds = 60, Notes = "Bodyweight squat" },
+                new ExerciseTemplateItem { Id = 3, ExerciseId = 13, Order = 3, TargetSets = 3, TargetReps = "30-60s", TargetRestSeconds = 60, Notes = "Plank" }
+            );
+
+            // Seed a calendar entry for the user, referencing the template
+            modelBuilder.Entity<CalendarEntry>().HasData(
+                new CalendarEntry { Id = 1, UserId = 1, Date = new DateTime(2024, 1, 2, 0, 0, 0, DateTimeKind.Utc), TemplateId = 1, Status = CalendarStatus.Scheduled }
+            );
         }
     }
 }

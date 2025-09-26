@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ST_Assignment_1.Data;
@@ -11,9 +12,11 @@ using ST_Assignment_1.Data;
 namespace ST_Assignment_1.Migrations
 {
     [DbContext(typeof(WorkoutJournalDbContext))]
-    partial class WorkoutJournalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250926195810_AdditionalDataSeeding")]
+    partial class AdditionalDataSeeding
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
