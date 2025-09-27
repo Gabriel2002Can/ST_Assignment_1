@@ -4,49 +4,137 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace ST_Assignment_1.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class initialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.CreateTable(
-                name: "Exercises",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Category = table.Column<int>(type: "integer", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    DefaultSets = table.Column<int>(type: "integer", nullable: false),
-                    DefaultReps = table.Column<string>(type: "text", nullable: false),
-                    DefaultRestSeconds = table.Column<int>(type: "integer", nullable: false),
-                    Difficulty = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Exercises", x => x.Id);
-                });
+            migrationBuilder.DropForeignKey(
+                name: "FK_TemplateItems_CalendarEntries_Id",
+                table: "TemplateItems");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_TemplateItems_Templates_Id",
+                table: "TemplateItems");
+
+            migrationBuilder.DropTable(
+                name: "SetRecords");
+
+            migrationBuilder.DropTable(
+                name: "SessionExercises");
+
+            migrationBuilder.DropTable(
+                name: "WorkoutSessions");
+
+            migrationBuilder.DropTable(
+                name: "CalendarEntries");
+
+            migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DeleteData(
+                table: "TemplateItems",
+                keyColumn: "Id",
+                keyValue: 3);
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Id",
+                table: "TemplateItems",
+                type: "integer",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "integer")
+                .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+            migrationBuilder.AddColumn<int>(
+                name: "TemplateId",
+                table: "TemplateItems",
+                type: "integer",
+                nullable: false,
+                defaultValue: 0);
 
             migrationBuilder.CreateTable(
-                name: "Templates",
+                name: "AppSettings",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Frequency = table.Column<int>(type: "integer", nullable: false)
+                    CurrentTemplateId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Templates", x => x.Id);
+                    table.PrimaryKey("PK_AppSettings", x => x.Id);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AppSettings",
+                columns: new[] { "Id", "CurrentTemplateId" },
+                values: new object[] { 1, 1 });
+
+            migrationBuilder.UpdateData(
+                table: "TemplateItems",
+                keyColumn: "Id",
+                keyValue: 1,
+                columns: new[] { "Notes", "TargetReps", "TargetRestSeconds", "TemplateId" },
+                values: new object[] { "Push-ups: 10 reps, 3 sets, 5 min rest", "10", 300, 1 });
+
+            migrationBuilder.UpdateData(
+                table: "TemplateItems",
+                keyColumn: "Id",
+                keyValue: 2,
+                columns: new[] { "ExerciseId", "Notes", "TargetReps", "TargetRestSeconds", "TemplateId" },
+                values: new object[] { 2, "Squats: 15 reps, 3 sets, 5 min rest", "15", 300, 1 });
+
+            migrationBuilder.UpdateData(
+                table: "Templates",
+                keyColumn: "Id",
+                keyValue: 1,
+                columns: new[] { "Description", "Name" },
+                values: new object[] { "A simple full body routine.", "Full Body Example" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TemplateItems_TemplateId",
+                table: "TemplateItems",
+                column: "TemplateId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_TemplateItems_Templates_TemplateId",
+                table: "TemplateItems",
+                column: "TemplateId",
+                principalTable: "Templates",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_TemplateItems_Templates_TemplateId",
+                table: "TemplateItems");
+
+            migrationBuilder.DropTable(
+                name: "AppSettings");
+
+            migrationBuilder.DropIndex(
+                name: "IX_TemplateItems_TemplateId",
+                table: "TemplateItems");
+
+            migrationBuilder.DropColumn(
+                name: "TemplateId",
+                table: "TemplateItems");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "Id",
+                table: "TemplateItems",
+                type: "integer",
+                nullable: false,
+                oldClrType: typeof(int),
+                oldType: "integer")
+                .OldAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
             migrationBuilder.CreateTable(
                 name: "Users",
@@ -54,10 +142,10 @@ namespace ST_Assignment_1.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Username = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    Username = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,9 +158,9 @@ namespace ST_Assignment_1.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    TemplateId = table.Column<int>(type: "integer", nullable: true),
                     UserId = table.Column<int>(type: "integer", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    TemplateId = table.Column<int>(type: "integer", nullable: true),
                     Status = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
@@ -92,51 +180,16 @@ namespace ST_Assignment_1.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TemplateItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false),
-                    ExerciseId = table.Column<int>(type: "integer", nullable: false),
-                    Order = table.Column<int>(type: "integer", nullable: false),
-                    TargetSets = table.Column<int>(type: "integer", nullable: false),
-                    TargetReps = table.Column<string>(type: "text", nullable: false),
-                    TargetRestSeconds = table.Column<int>(type: "integer", nullable: false),
-                    Notes = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TemplateItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TemplateItems_CalendarEntries_Id",
-                        column: x => x.Id,
-                        principalTable: "CalendarEntries",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TemplateItems_Exercises_ExerciseId",
-                        column: x => x.ExerciseId,
-                        principalTable: "Exercises",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TemplateItems_Templates_Id",
-                        column: x => x.Id,
-                        principalTable: "Templates",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "WorkoutSessions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    UserId = table.Column<int>(type: "integer", nullable: false),
                     CalendarEntryId = table.Column<int>(type: "integer", nullable: true),
-                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
                     EndTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    Notes = table.Column<string>(type: "text", nullable: false)
+                    Notes = table.Column<string>(type: "text", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -160,13 +213,13 @@ namespace ST_Assignment_1.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    SessionId = table.Column<int>(type: "integer", nullable: false),
                     ExerciseId = table.Column<int>(type: "integer", nullable: false),
+                    SessionId = table.Column<int>(type: "integer", nullable: false),
+                    CompletedSets = table.Column<int>(type: "integer", nullable: false),
                     Order = table.Column<int>(type: "integer", nullable: false),
-                    TargetSets = table.Column<int>(type: "integer", nullable: false),
                     TargetReps = table.Column<string>(type: "text", nullable: false),
                     TargetRestSeconds = table.Column<int>(type: "integer", nullable: false),
-                    CompletedSets = table.Column<int>(type: "integer", nullable: false)
+                    TargetSets = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -192,10 +245,10 @@ namespace ST_Assignment_1.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     SessionExerciseId = table.Column<int>(type: "integer", nullable: false),
-                    SetNumber = table.Column<int>(type: "integer", nullable: false),
-                    PlannedRepsOrDuration = table.Column<string>(type: "text", nullable: false),
                     ActualRepsOrDuration = table.Column<string>(type: "text", nullable: false),
+                    PlannedRepsOrDuration = table.Column<string>(type: "text", nullable: false),
                     RestAfterSetSeconds = table.Column<int>(type: "integer", nullable: false),
+                    SetNumber = table.Column<int>(type: "integer", nullable: false),
                     Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -209,28 +262,41 @@ namespace ST_Assignment_1.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.UpdateData(
+                table: "TemplateItems",
+                keyColumn: "Id",
+                keyValue: 1,
+                columns: new[] { "Notes", "TargetReps", "TargetRestSeconds" },
+                values: new object[] { "Standard push-up", "8-12", 75 });
+
+            migrationBuilder.UpdateData(
+                table: "TemplateItems",
+                keyColumn: "Id",
+                keyValue: 2,
+                columns: new[] { "ExerciseId", "Notes", "TargetReps", "TargetRestSeconds" },
+                values: new object[] { 9, "Bodyweight squat", "12-20", 60 });
+
             migrationBuilder.InsertData(
-                table: "Exercises",
-                columns: new[] { "Id", "Category", "DefaultReps", "DefaultRestSeconds", "DefaultSets", "Description", "Difficulty", "Name" },
-                values: new object[,]
-                {
-                    { 1, 0, "8-15", 75, 3, "Standard push-up. Keep body aligned.", 0, "Push-up" },
-                    { 2, 0, "8-20", 60, 3, "Incline push-up.", 0, "Incline Push-up" },
-                    { 3, 0, "6-12", 90, 3, "Diamond push-up.", 1, "Diamond Push-up" },
-                    { 4, 0, "6-12", 105, 3, "Pike push-up.", 1, "Pike Push-up" },
-                    { 5, 1, "3-10", 135, 4, "Pull-up.", 1, "Pull-up" },
-                    { 6, 1, "3-10", 135, 4, "Chin-up.", 1, "Chin-up" },
-                    { 7, 1, "8-15", 75, 3, "Bodyweight row.", 0, "Bodyweight Row (Australian Pull-up)" },
-                    { 8, 0, "6-15", 105, 3, "Parallel bar dips.", 1, "Dips (parallel bar)" },
-                    { 9, 2, "12-20", 60, 3, "Bodyweight squat.", 0, "Squat (bodyweight)" },
-                    { 10, 2, "8-15", 75, 3, "Jump squat.", 1, "Jump Squat" },
-                    { 11, 2, "3-8", 135, 4, "Assisted pistol squat.", 2, "Pistol Squat (assisted)" },
-                    { 12, 2, "8-15", 75, 3, "Lunges.", 0, "Lunges (walking/static)" },
-                    { 13, 3, "30-90s", 60, 3, "Plank.", 0, "Plank" },
-                    { 14, 3, "8-15", 75, 3, "Hanging leg raise.", 1, "Hanging Leg Raise" },
-                    { 15, 4, "30s", 45, 3, "Mountain climbers.", 0, "Mountain Climbers" },
-                    { 16, 4, "6-15", 90, 3, "Burpee.", 1, "Burpee" }
-                });
+                table: "TemplateItems",
+                columns: new[] { "Id", "ExerciseId", "Notes", "Order", "TargetReps", "TargetRestSeconds", "TargetSets" },
+                values: new object[] { 3, 13, "Plank", 3, "30-60s", 60, 3 });
+
+            migrationBuilder.UpdateData(
+                table: "Templates",
+                keyColumn: "Id",
+                keyValue: 1,
+                columns: new[] { "Description", "Name" },
+                values: new object[] { "A simple full body routine for beginners.", "Full Body Beginner" });
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedAt", "Email", "PasswordHash", "Username" },
+                values: new object[] { 1, new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "demo@example.com", "", "demo" });
+
+            migrationBuilder.InsertData(
+                table: "CalendarEntries",
+                columns: new[] { "Id", "Date", "Status", "TemplateId", "UserId" },
+                values: new object[] { 1, new DateTime(2024, 1, 2, 0, 0, 0, 0, DateTimeKind.Utc), 0, 1, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_CalendarEntries_TemplateId",
@@ -258,11 +324,6 @@ namespace ST_Assignment_1.Migrations
                 column: "SessionExerciseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TemplateItems_ExerciseId",
-                table: "TemplateItems",
-                column: "ExerciseId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_WorkoutSessions_CalendarEntryId",
                 table: "WorkoutSessions",
                 column: "CalendarEntryId");
@@ -271,34 +332,22 @@ namespace ST_Assignment_1.Migrations
                 name: "IX_WorkoutSessions_UserId",
                 table: "WorkoutSessions",
                 column: "UserId");
-        }
 
-        /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropTable(
-                name: "SetRecords");
+            migrationBuilder.AddForeignKey(
+                name: "FK_TemplateItems_CalendarEntries_Id",
+                table: "TemplateItems",
+                column: "Id",
+                principalTable: "CalendarEntries",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
-            migrationBuilder.DropTable(
-                name: "TemplateItems");
-
-            migrationBuilder.DropTable(
-                name: "SessionExercises");
-
-            migrationBuilder.DropTable(
-                name: "Exercises");
-
-            migrationBuilder.DropTable(
-                name: "WorkoutSessions");
-
-            migrationBuilder.DropTable(
-                name: "CalendarEntries");
-
-            migrationBuilder.DropTable(
-                name: "Templates");
-
-            migrationBuilder.DropTable(
-                name: "Users");
+            migrationBuilder.AddForeignKey(
+                name: "FK_TemplateItems_Templates_Id",
+                table: "TemplateItems",
+                column: "Id",
+                principalTable: "Templates",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
     }
 }
