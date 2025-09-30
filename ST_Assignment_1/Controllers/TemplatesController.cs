@@ -5,6 +5,9 @@ using ST_Assignment_1.Models;
 
 namespace ST_Assignment_1.Controllers
 {
+    /// <summary>
+    /// Manage workout templates composed of ordered exercise items.
+    /// </summary>
     [ApiController]
     [Route("api/templates")]
     public class TemplatesController : ControllerBase
@@ -15,13 +18,23 @@ namespace ST_Assignment_1.Controllers
             _db = db;
         }
 
+        /// <summary>
+        /// Returns all templates including their items and exercise details.
+        /// </summary>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<Template>>> GetAll()
         {
             return await _db.Templates.Include(t => t.Items).ThenInclude(i => i.Exercise).ToListAsync();
         }
 
+        /// <summary>
+        /// Returns a single template by id including items and exercises.
+        /// </summary>
+        /// <param name="id">Template identifier</param>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Template>> GetById(int id)
         {
             var template = await _db.Templates.Include(t => t.Items).ThenInclude(i => i.Exercise).FirstOrDefaultAsync(t => t.Id == id);
@@ -29,7 +42,13 @@ namespace ST_Assignment_1.Controllers
             return template;
         }
 
+        /// <summary>
+        /// Creates a new template (with optional items).
+        /// </summary>
+        /// <param name="template">Template payload with Items. Each item must specify ExerciseId.</param>
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<Template>> Create(Template template)
         {
             _db.Templates.Add(template);
@@ -37,7 +56,14 @@ namespace ST_Assignment_1.Controllers
             return CreatedAtAction(nameof(GetById), new { id = template.Id }, template);
         }
 
+        /// <summary>
+        /// Replaces core template data and its items (full update).
+        /// </summary>
+        /// <param name="id">Template identifier</param>
+        /// <param name="updated">Full replacement payload including desired Items collection.</param>
         [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Update(int id, Template updated)
         {
             var template = await _db.Templates.Include(t => t.Items).FirstOrDefaultAsync(t => t.Id == id);
@@ -58,7 +84,13 @@ namespace ST_Assignment_1.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a template (items removed by cascade if configured).
+        /// </summary>
+        /// <param name="id">Template identifier</param>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(int id)
         {
             var template = await _db.Templates.FindAsync(id);
@@ -68,8 +100,12 @@ namespace ST_Assignment_1.Controllers
             return NoContent();
         }
 
-        // GET /api/templates/current
+        /// <summary>
+        /// Returns the currently selected template (application setting) including items.
+        /// </summary>
         [HttpGet("current")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Template>> GetCurrent()
         {
             var appSettings = await _db.AppSettings.FirstOrDefaultAsync();
@@ -79,8 +115,13 @@ namespace ST_Assignment_1.Controllers
             return template;
         }
 
-        // PUT /api/templates/current/{id}
+        /// <summary>
+        /// Sets the provided template id as the current template.
+        /// </summary>
+        /// <param name="id">Template identifier to mark current.</param>
         [HttpPut("current/{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> SetCurrent(int id)
         {
             var template = await _db.Templates.FindAsync(id);

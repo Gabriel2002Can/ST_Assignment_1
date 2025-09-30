@@ -1,12 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using ST_Assignment_1.Data;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // Required for Swagger
-builder.Services.AddSwaggerGen(); // Add Swagger generator
+builder.Services.AddSwaggerGen(options =>
+{
+    // Include XML comments for better Swagger descriptions
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+    }
+}); // Add Swagger generator
 
 // Configuring CORS
 builder.Services.AddCors(options =>
@@ -33,7 +43,7 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
-    options.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Workout Journal API V1");
     options.RoutePrefix = string.Empty; // Serve Swagger UI at root
 });
 
