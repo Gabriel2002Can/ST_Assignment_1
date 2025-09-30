@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace ST_Assignment_1.Models
 {
@@ -19,7 +21,10 @@ namespace ST_Assignment_1.Models
         public int Id { get; set; }
         public int TemplateId { get; set; }
         public int ExerciseId { get; set; }
-        public Exercise Exercise { get; set; }
+        // Ignore navigation in JSON (client only provides ExerciseId) and exclude from model binding validation
+        [JsonIgnore]
+        [BindNever]
+        public Exercise? Exercise { get; set; }
         public int Order { get; set; }
         public int TargetSets { get; set; }
         public string TargetReps { get; set; }
